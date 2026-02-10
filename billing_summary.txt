@@ -1,21 +1,5 @@
 # Billing summaries will be appended below when you choose to save from the program.
-================ BILLING SUMMARY ================
-Tariff: 22.00 per kWh
-Appliances count: 6
-Total daily energy: 7.17 kWh
-Total daily cost:  157.63
-Estimated 30-day energy: 214.95 kWh
-Estimated 30-day cost:  4728.90
-=================================================
 
-================ BILLING SUMMARY ================
-Tariff: 17.00 per kWh
-Appliances count: 6
-Total daily energy: 7.17 kWh
-Total daily cost:  121.81
-Estimated 30-day energy: 214.95 kWh
-Estimated 30-day cost:  3654.15
-=================================================
 
 
 
