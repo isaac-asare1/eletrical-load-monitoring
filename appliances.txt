@@ -1,0 +1,6 @@
+Fridge|150|8
+TV|100|4
+Fan|60|10
+Lights|40|6
+Laptop|65|5
+Induction Cooker|2200|2
