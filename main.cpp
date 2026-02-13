@@ -1,50 +1,27 @@
 #include <iostream>
-#include <fstream>
-#include <sstream>
-#include <vector>
 #include <string>
-#include <iomanip>
 #include <limits>
 
 using namespace std;
 
-
-// ------------------------------
+// File names 
 const string APPLIANCES_FILE = "appliances.txt";
 const string BILLING_FILE    = "billing_summary.txt";
 
-// ------------------------------
-// Data Model
-// ------------------------------
-struct Appliance {
-    string name;   // must not be empty
-    double watts;  // > 0
-    double hours;  // 0..24 (daily usage)
+// Max appliances (will be used later)
+const int MAX_APPLIANCES = 100;
 
-    double dailyKwh() const {
-        return (watts / 1000.0) * hours;
-    }
-};
-
-// ------------------------------
-// Small helpers
-// ------------------------------
-static inline string trim(const string& s) {
-    size_t start = s.find_first_not_of(" \t\r\n");
-    if (start == string::npos) return "";
-    size_t end = s.find_last_not_of(" \t\r\n");
-    return s.substr(start, end - start + 1);
-}
-
+// Clears bad input from cin
 void clearBadInput() {
     cin.clear();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
 
+// Reads an int safely (keeps asking until correct)
 int readInt(const string& prompt) {
+    int x;
     while (true) {
         cout << prompt;
-        int x;
         if (cin >> x) {
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             return x;
@@ -54,164 +31,55 @@ int readInt(const string& prompt) {
     }
 }
 
-double readDouble(const string& prompt) {
-    while (true) {
-        cout << prompt;
-        double x;
-        if (cin >> x) {
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            return x;
-        }
-        cout << "Invalid number. Try again.\n";
-        clearBadInput();
-    }
+void showMenu() {
+    cout << "\n==================== MAIN MENU ====================\n";
+    cout << "1. Register electrical appliance (coming soon)\n";
+    cout << "2. View all registered appliances (coming soon)\n";
+    cout << "3. Search appliance by name (coming soon)\n";
+    cout << "4. Load and energy calculation + billing (coming soon)\n";
+    cout << "5. Save appliances to file (coming soon)\n";
+    cout << "6. Exit\n";
+    cout << "===================================================\n";
 }
 
-double readDoubleInRange(const string& prompt, double minVal, double maxVal) {
-    while (true) {
-        double v = readDouble(prompt);
-        if (v >= minVal && v <= maxVal) return v;
-        cout << "Value must be between " << minVal << " and " << maxVal << ". Try again.\n";
-    }
-}
-
-double readPositiveDouble(const string& prompt) {
-    while (true) {
-        double v = readDouble(prompt);
-        if (v > 0) return v;
-        cout << "Value must be greater than 0. Try again.\n";
-    }
-}
-
-string readNonEmptyLine(const string& prompt) {
-    while (true) {
-        cout << prompt;
-        string s;
-        getline(cin, s);
-        s = trim(s);
-        if (!s.empty()) return s;
-        cout << "Input must not be empty. Try again.\n";
-    }
-}
-
-// Case-insensitive compare (simple)
-string toLowerStr(string s) {
-    for (char& c : s) c = (char)tolower((unsigned char)c);
-    return s;
-}
-
-// ------------------------------
-// File I/O: load + save appliances
-// Format per line:
-// name|watts|hours
-// ------------------------------
-bool loadAppliances(vector<Appliance>& appliances) {
-    appliances.clear();
-
-    ifstream fin(APPLIANCES_FILE);
-    if (!fin.is_open()) {
-        // File may not exist on first run; that's okay.
-        return false;
-    }
-
-    string line;
-    while (getline(fin, line)) {
-        line = trim(line);
-        if (line.empty()) continue;
-
-        // Expect name|watts|hours
-        stringstream ss(line);
-        string name, wattsStr, hoursStr;
-
-        if (!getline(ss, name, '|')) continue;
-        if (!getline(ss, wattsStr, '|')) continue;
-        if (!getline(ss, hoursStr, '|')) continue;
-
-        name = trim(name);
-        wattsStr = trim(wattsStr);
-        hoursStr = trim(hoursStr);
-
-        // Basic safety parse
-        try {
-            double w = stod(wattsStr);
-            double h = stod(hoursStr);
-
-            // Only load valid records
-            if (!name.empty() && w > 0 && h >= 0 && h <= 24) {
-                appliances.push_back({name, w, h});
-            }
-        } catch (...) {
-            // Skip malformed lines
-            continue;
-        }
-    }
-    fin.close();
-    return true;
-}
-
-
-void printHeader(const string& title) {
-    cout << "\n===============================================================\n";
-    cout << title << "\n";
-    cout << "===============================================================\n";
-}
-
-void registerAppliance(vector<Appliance>& appliances) {
-    printHeader("Register Appliance");
-
-    Appliance a;
-    a.name  = readNonEmptyLine("Appliance name: ");
-    a.watts = readPositiveDouble("Power rating (watts, > 0): ");
-    a.hours = readDoubleInRange("Daily usage time (hours, 0 - 24): ", 0, 24);
-
-    appliances.push_back(a);
-
-    if (saveAppliances(appliances)) {
-        cout << "✅ Appliance registered and saved.\n";
-    } else {
-        cout << "⚠️ Registered, but failed to save to file.\n";
-    }
-}
-
-
-// Main program
-// ------------------------------
 int main() {
-    vector<Appliance> appliances;
-
-    // Load saved appliance data at startup
-    loadAppliances(appliances);
-
-    cout << "\n\nElectrical Load Monitoring & Billing System\n";
-    cout << "Loaded appliances: " << appliances.size() << "\n";
+    cout << "Electrical Load Monitoring & Billing System\n";
+    cout << "-------------------------------------------\n";
 
     while (true) {
-        
+        showMenu();
         int option = readInt("Choose an option (1-6): ");
 
         switch (option) {
             case 1:
-                registerAppliance(appliances);
+                cout << "Register appliance feature is not implemented yet.\n";
                 break;
+
             case 2:
-                //view appliances
+                cout << "View appliances feature is not implemented yet.\n";
                 break;
+
             case 3:
-                //search appliances
+                cout << "Search appliance feature is not implemented yet.\n";
                 break;
-                case 4:
-                //billing menu
+
+            case 4:
+                cout << "Billing feature is not implemented yet.\n";
                 break;
-                case 5:
-                //save appliances
+
+            case 5:
+                cout << "Save feature is not implemented yet.\n";
                 break;
+
             case 6:
-               //exit
+                cout << "Goodbye!\n";
+                return 0;
 
             default:
-                // Gracefully handle invalid menu choices
                 cout << "Invalid choice. Please choose between 1 and 6.\n";
                 break;
         }
     }
+
+    return 0;
 }
