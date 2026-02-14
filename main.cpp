@@ -11,9 +11,6 @@ const string BILLING_FILE    = "billing_summary.txt";
 // Max appliances 
 const int MAX_APPLIANCES = 100;
 
-// ------------------------------
-// Data Model 
-// ------------------------------
 struct Appliance {
     string name;
     double watts;
@@ -25,13 +22,32 @@ double dailyKwh(const Appliance& a) {
     return (a.watts / 1000.0) * a.hours;
 }
 
+
+// Trims leading/trailing whitespace
+string trim(const string& s) {
+    int start = 0;
+    while (start < (int)s.size() &&
+          (s[start] == ' ' || s[start] == '\t' || s[start] == '\r' || s[start] == '\n')) {
+        start++;
+    }
+
+    int end = (int)s.size() - 1;
+    while (end >= 0 &&
+          (s[end] == ' ' || s[end] == '\t' || s[end] == '\r' || s[end] == '\n')) {
+        end--;
+    }
+
+    if (end < start) return "";
+    return s.substr(start, end - start + 1);
+}
+
 // Clears bad input from cin
 void clearBadInput() {
     cin.clear();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
 
-// Reads an int safely (keeps asking until correct)
+// Reads an int safely
 int readInt(const string& prompt) {
     int x;
     while (true) {
@@ -42,6 +58,51 @@ int readInt(const string& prompt) {
         }
         cout << "Invalid number. Try again.\n";
         clearBadInput();
+    }
+}
+
+// Reads a double safely
+double readDouble(const string& prompt) {
+    double x;
+    while (true) {
+        cout << prompt;
+        if (cin >> x) {
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            return x;
+        }
+        cout << "Invalid number. Try again.\n";
+        clearBadInput();
+    }
+}
+
+// Reads a non-empty line (for names)
+string readNonEmptyLine(const string& prompt) {
+    while (true) {
+        cout << prompt;
+        string s;
+        getline(cin, s);
+        s = trim(s);
+
+        if (s != "") return s;
+        cout << "Input must not be empty. Try again.\n";
+    }
+}
+
+// Reads a positive double (> 0)
+double readPositiveDouble(const string& prompt) {
+    while (true) {
+        double v = readDouble(prompt);
+        if (v > 0) return v;
+        cout << "Value must be greater than zero. Try again.\n";
+    }
+}
+
+// Reads hours in range 0..24
+double readHours(const string& prompt) {
+    while (true) {
+        double h = readDouble(prompt);
+        if (h >= 0 && h <= 24) return h;
+        cout << "Usage hours must be between 0 and 24. Try again.\n";
     }
 }
 
@@ -60,22 +121,25 @@ int main() {
     cout << "Electrical Load Monitoring & Billing System\n";
     cout << "-------------------------------------------\n";
 
-    
-    // Not used in the menu yet
-    Appliance sample;
-    sample.name = "Sample Appliance";
-    sample.watts = 100.0;
-    sample.hours = 2.0;
-    // cout << "Sample daily kWh: " << dailyKwh(sample) << "\n";
-
     while (true) {
         showMenu();
         int option = readInt("Choose an option (1-6): ");
 
         switch (option) {
-            case 1:
-                cout << "Register appliance feature is not implemented yet.\n";
+            case 1: {
+                cout << "\n--- Register Appliance (demo input only) ---\n";
+                Appliance a;
+                a.name  = readNonEmptyLine("Appliance name: ");
+                a.watts = readPositiveDouble("Power rating (watts, > 0): ");
+                a.hours = readHours("Daily usage hours (0 - 24): ");
+
+                cout << "\nCaptured:\n";
+                cout << "Name: " << a.name << "\n";
+                cout << "Watts: " << a.watts << "\n";
+                cout << "Hours/day: " << a.hours << "\n";
+                cout << "kWh/day: " << dailyKwh(a) << "\n";
                 break;
+            }
 
             case 2:
                 cout << "View appliances feature is not implemented yet.\n";
