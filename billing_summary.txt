@@ -1,0 +1,9 @@
+================ BILLING SUMMARY ================
+Tariff: 0.90 per kWh
+Appliances count: 8
+Total daily energy: 7.71 kWh
+Total daily cost:  6.93
+Estimated 30-day energy: 231.15 kWh
+Estimated 30-day cost:  208.04
+=================================================
+

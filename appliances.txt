@@ -1,1 +1,8 @@
-Blender | 800 | 3
+Fridge|150|8
+TV|100|4
+Fan|60|10
+Lights|40|6
+Laptop|65|5
+Induction Cooker|2200|2
+Washing machine|120|2
+Electric Blender|300|1
