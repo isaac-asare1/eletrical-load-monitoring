@@ -110,8 +110,31 @@ void showMenu() {
     cout << "===================================================\n";
 }
 
+void registerAppliance(Appliance appliances[], int& count) {
+    printHeader("Register Appliance");
+
+    if (count >= MAX_APPLIANCES) {
+        cout << "Cannot add more appliances (limit reached).\n";
+        return;
+    }
+
+    Appliance a;
+    a.name = readNonEmptyLine("Appliance name: ");
+    a.watts = readPositiveDouble("Power rating (watts, > 0): ");
+    a.hours = readHours("Daily usage hours (0 - 24): ");
+
+    appliances[count] = a;
+    count++;
+
+    cout << "Appliance registered.\n";
+}
+
 int main() {
+    Appliance appliances[MAX_APPLIANCES];
+    int count = 0;
+
     printHeader("Electrical Load Monitoring & Billing System");
+    cout << "Registered appliances: " << count << "\n";
 
     while (true) {
         showMenu();
@@ -119,8 +142,7 @@ int main() {
 
         switch (option) {
             case 1:
-                printHeader("Register Appliance");
-                cout << "This feature will be implemented in the next part.\n";
+                registerAppliance(appliances, count);
                 break;
 
             case 2:
@@ -130,17 +152,17 @@ int main() {
 
             case 3:
                 printHeader("Search Appliance");
-                cout << "This feature will be implemented in the next part.\n";
+                cout << "This feature will be implemented in a later part.\n";
                 break;
 
             case 4:
                 printHeader("Billing");
-                cout << "This feature will be implemented in the next part.\n";
+                cout << "This feature will be implemented in a later part.\n";
                 break;
 
             case 5:
                 printHeader("Save Appliances");
-                cout << "This feature will be implemented in the next part.\n";
+                cout << "This feature will be implemented in a later part.\n";
                 break;
 
             case 6:
