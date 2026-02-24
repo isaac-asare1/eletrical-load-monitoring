@@ -3,6 +3,7 @@
 #include <limits>
 #include <iomanip>
 #include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -212,25 +213,87 @@ bool saveAppliances(const Appliance appliances[], int count) {
     return true;
 }
 
+bool loadAppliances(Appliance appliances[], int& count) {
+    count = 0;
+
+    ifstream fin(APPLIANCES_FILE.c_str());
+    if (!fin.is_open()) {
+        return false;
+    }
+
+    string line;
+    while (getline(fin, line)) {
+        line = trim(line);
+        if (line == "") continue;
+
+        int p1 = (int)line.find('|');
+        if (p1 == -1) continue;
+        int p2 = (int)line.find('|', p1 + 1);
+        if (p2 == -1) continue;
+
+        string name = trim(line.substr(0, p1));
+        string wattsStr = trim(line.substr(p1 + 1, p2 - (p1 + 1)));
+        string hoursStr = trim(line.substr(p2 + 1));
+
+        double w = 0.0, h = 0.0;
+        {
+            stringstream sw(wattsStr);
+            if (!(sw >> w)) continue;
+        }
+        {
+            stringstream sh(hoursStr);
+            if (!(sh >> h)) continue;
+        }
+
+        if (name != "" && w > 0 && h >= 0 && h <= 24) {
+            if (count < MAX_APPLIANCES) {
+                appliances[count].name = name;
+                appliances[count].watts = w;
+                appliances[count].hours = h;
+                count++;
+            }
+        }
+    }
+
+    fin.close();
+    return true;
+}
+
 int main() {
     Appliance appliances[MAX_APPLIANCES];
     int count = 0;
 
+    bool loaded = loadAppliances(appliances, count);
+
     printHeader("Electrical Load Monitoring & Billing System");
-    cout << "Registered appliances: " << count << "\n";
+    if (loaded) {
+        cout << "Loaded appliances: " << count << "\n";
+    } else {
+        cout << "No previous appliances file found. Starting fresh.\n";
+    }
 
     while (true) {
         showMenu();
         int option = readInt("Choose an option (1-6): ");
 
         switch (option) {
-            case 1: registerAppliance(appliances, count); break;
-            case 2: viewAppliances(appliances, count); break;
-            case 3: searchAppliance(appliances, count); break;
+            case 1:
+                registerAppliance(appliances, count);
+                break;
+
+            case 2:
+                viewAppliances(appliances, count);
+                break;
+
+            case 3:
+                searchAppliance(appliances, count);
+                break;
+
             case 4:
                 printHeader("Billing");
-                cout << "This feature will be implemented in a later part.\n";
+                cout << "This feature will be implemented in the next part.\n";
                 break;
+
             case 5:
                 printHeader("Save Appliances");
                 if (saveAppliances(appliances, count)) {
@@ -239,10 +302,12 @@ int main() {
                     cout << "Failed to save appliances.\n";
                 }
                 break;
+
             case 6:
                 printHeader("Exit");
                 cout << "Goodbye!\n";
                 return 0;
+
             default:
                 cout << "Invalid choice. Please choose between 1 and 6.\n";
                 break;
